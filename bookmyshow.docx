@@ -1,0 +1,108 @@
+Objective:- Bookmyshow is a ticketing platform where you can book tickets for a movie show. The image attached represents that for a given theatre we can see the next 7 dates. As one chooses the date, 
+we get list of all shows running in that theatre along with the show timings.
+
+Problem 1 - As part of this assignment, we need to list down all the entities, their attributes and the table structures for the scenario mentioned in the previous slide. 
+You also need to write the SQL queries required to create these tables along with few sample entries. Ensure the tables follow 1NF, 2NF, 3NF and BCNF rules.
+
+Problem 2 - Write a query to list down all the shows on a given date at a given theatre along with their respective show timings. 
+
+
+(Entity)     :- Users
+(Attributes) :- user_id (Primary), username, phone, email 
+
+(Entity)     :- Theaters
+(Attributes) :- theater_id (Primary), theater_name, location
+
+(Entity)     :- Movies 
+(Attributes) :- movie_id (Primary), movie_name, genre
+
+(Entity)     :- Shows 
+(Attributes) :- show_id (Primary), movie_id (Foreign Key), theater_id (Foreign Key), time 
+
+(Entity)     :- tickets 
+(Attributes) :- ticket_id (Primary), user_id (Foreign Key), show_id (Foreign Key), price
+
+
+Table Creation Queries:- 
+
+Users:- 
+    CREATE TABLE Users (
+        user_id INT PRIMARY KEY AUTO_INCREMENT,
+        username VARCHAR(15),
+        phone VARCHAR(15),
+        email VARCHAR(255)
+    );
+
+Theaters:-
+    CREATE TABLE Theaters (
+        theater_id INT PRIMARY KEY AUTO_INCREMENT,
+        theater_name VARCHAR(255),
+        location VARCHAR(255)
+    );
+
+Movies:-
+    CREATE TABLE Movies (
+        movie_id INT PRIMARY KEY AUTO_INCREMENT,
+        movie_name VARCHAR(50),
+        genre VARCHAR(100)
+    );
+
+Shows:- 
+    CREATE TABLE Shows (
+        show_id INT PRIMARY KEY AUTO_INCREMENT,
+        movie_id INT,
+        theater_id INT,
+        time DATETIME,
+        FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+        FOREIGN KEY (theater_id) REFERENCES Theaters(theater_id)
+    );
+
+Tickets:-
+    CREATE TABLE Tickets (
+        ticket_id INT PRIMARY KEY AUTO_INCREMENT,
+        user_id INT,
+        show_id INT,
+        Price DECIMAL(8, 2),
+        FOREIGN KEY (user_id) REFERENCES User(user_id),
+        FOREIGN KEY (show_id) REFERENCES Show(show_id)
+    );
+
+
+Inserting Data into Tables:- 
+
+Users Entries:-
+    INSERT INTO Users (username, phone, email) VALUES
+        ('shakir’, '9881871883', 'shakir123@gmail.com'),
+        ('zakir', '9881871884', 'zakir123@gmail.com');
+
+Movies Entries:-
+    INSERT INTO Movies (movie_name, genre) VALUES
+        ('John Wick', 'Action'),
+        ('American Pie', 'Comedy');
+
+Theaters Entries:-
+    INSERT INTO Theaters (theater_name, Location) VALUES
+        ('Galaxy', 'Ghaziabad'),
+        ('Pacific', 'Anand Vihar');
+
+Shows Entries:-
+    INSERT INTO Shows (movie_Id, theater_Id, time) VALUES
+        (1, 1, '2024-01-11 16:00:00'),
+        (2, 1, '2024-01-11 18:30:00'),
+        (1, 2, '2024-01-11 20:30:00');
+
+Tickets Entries:-
+    INSERT INTO Tickets (user_id, show_id, Price) VALUES
+        (1, 1, 21.98),
+        (2, 3, 36.00);
+
+
+
+Solution 2 - This is a query to list down all the shows on a given date at a given theatre along with their respective show timings:-  
+
+SELECT Shows.show_id, Movies.movie_name AS Movie_Name, Shows.time AS Show_Time
+FROM Shows
+JOIN Movie 
+ON Shows.movie_id = Movies.movie_id
+WHERE Shows.theater_Id = 2
+AND DATE(Shows.time) = '2024-01-11';
